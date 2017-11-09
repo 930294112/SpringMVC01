@@ -1,0 +1,15 @@
+.loginview {
+    /*text-align: center;*/
+    /*border:1px solid green;*/
+}
+
+#logininnerview {
+    margin: 0 auto;
+    width: 300px;
+    height: 200px;
+    /*border: 1px solid red;*/
+}
+
+#loginresult{
+    color: red;
+}

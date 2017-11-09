@@ -1,0 +1,87 @@
+一.SpringMVC
+
+作用:处理前端页面的请求
+好处:处理机制是DispatchServlet,其效率会比Struts2高,Struts2的处理机制是Filter过滤器
+
+1.SpringMVC的配置
+    a) 导入相关的jar包:core beans context aop web webmvc
+    b) 编写spring全局配置文件
+        基础配置:
+        1) 注解驱动打开 <mvc :annotation-driver/>
+        2) 注解扫描的跟路径  <context:component-scan base-package="com.lanou"/>
+        3) 配置SpringMVC视图解析机制
+            <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+                    <!--配置视图解析的前缀-->
+                    <property name="prefix" value="/WEB-INF/pages/"/>
+                    <!--配置视图解析的后缀-->
+                    <property name="suffix" value=".jsp"/>
+            </bean>
+        4)配置静态资源交由web服务器自己处理,springMVC不处理  <mvc:default-servlet-handler/>
+    c) 配置web.xml文件
+        1) 将浏览器请求的url地址都交给DispatcherServlet处理
+              <!--springmvc的配置-->
+                <servlet>
+                  <servlet-name>springmvc</servlet-name>
+                  <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+                  <!--指定Spring的配置文件-->
+                  <init-param>
+                    <param-name>contextConfigLocation</param-name>
+                    <param-value>classpath:spring-config.xml</param-value>
+                  </init-param>
+                </servlet>
+
+                <servlet-mapping>
+                  <servlet-name>springmvc</servlet-name>
+                  <!--处理所有带/的请求,而struts2这个地方写的是/*-->
+                  <url-pattern>/</url-pattern>
+                </servlet-mapping>
+        备注:配置spring路径用的参数名是 contextConfigLocation
+            servlet处理的url-pattern是 / , 不要带 * (Struts2是/*)
+
+2.SpringMVC的使用
+
+    a.常见注解
+        1) @Controller:在类上声明的注解,代表当前类是一个控制器,类似于struts2的@Action注解
+        2) @RequestMapper :请求地址声明,通常在方法中使用,即代表当前方法可以处理某个请求,其中value属性定义请地址
+            例如 @RequestMapper(value="/home")
+            代表浏览器输入localhost8080/home时会进入当前方法
+        3) @PathVariable :获取路径上的某个值,其中在路径中用{id}声明id是可以用参数获取的
+            例如 @RequestMapper(value="/home/{id}")
+            public String home(@PathVariable Interge id){....}
+            要求{}中的id必须与方法参数中的id保持一致
+        4) @ResponseBody:声明当前方法返回的是一个json数据或者xml数据
+
+    b.数据获取请求参数
+        1) 在处理法方法中声明与页面提交的参数名同名的参数
+           例如 @RequestMapper(value="/home")
+                public String home(String username,String password){....}
+
+        2) 在处理方法中声明pojo类对象,要求pojo类中的属性名与页面提交的组件id同名
+            例如 @RequestMapper(value="/home")
+                public String home(User user){....}
+
+        3) 如果表单提交的是多个数据,可以在方法参数中直接使用集合接收
+            例如 @RequestMapper(value="/home")
+                public String home(List<User> users){....}
+
+    c.数据回显
+
+        1) 页面回显,指的就是当期结果处理之后的跳转,即方法的返回值,会根据Spring配置文件中的视图解析定义自动加上前缀后缀
+            例如  @RequestMapper(value="/home")
+                  public String home(List<User> users){
+                    return "home";
+                  }
+                此时路径为: WEB-INF/pages/home.jsp, 其中 WEB-INF/pages/是前缀 .jsp是后缀
+
+        2)数据回显,即跳转到目的页面时携带相关参数,相关参数需要存储在Model对象中,该Model对象通过方法参数定义进行传递
+             列如 @RequestMapper(value="/home")
+                  public String home(List<User> users,Model model){
+                        model.addAtribute(key,value);
+                        return "home";
+                  }
+              其中:model对象有一个map专门用户数据的存储,故数据以key,value的方式进行存储,key是String类型,value是Object类型
+
+    d.取servletAPI
+       通过请求方法的方法参数直接声明要获取的API即可
+             例如 @RequestMapping(value = "home")
+                  public String home(HttpServletRequest request,HttpServletResponse response){...}
