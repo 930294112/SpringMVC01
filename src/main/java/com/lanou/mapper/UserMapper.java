@@ -12,4 +12,8 @@ public interface UserMapper {
      * @return
      */
     User findByName(String name);
+
+    int addUser(User user);
+
+
 }

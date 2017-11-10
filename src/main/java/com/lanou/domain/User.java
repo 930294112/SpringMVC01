@@ -1,13 +1,55 @@
 package com.lanou.domain;
 
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.validation.constraints.Pattern;
+
 /**
  * Created by dllo on 17/11/8.
  */
 public class User {
     private int id;
+
+    @NotBlank(message ="用户名不能为空")
     private String username;
+    @NotBlank(message ="密码不能为空")
     private String password;
     private String regpassword;
+
+    private String tel;
+    private String address;
+
+    public User(String username, String password, String regpassword, String tel, String address) {
+        this.username = username;
+        this.password = password;
+        this.regpassword = regpassword;
+        this.tel = tel;
+        this.address = address;
+    }
+
+    public User(String username, String password, String tel, String address) {
+        this.username = username;
+        this.password = password;
+        this.tel = tel;
+        this.address = address;
+    }
+
+    public String getTel() {
+
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
     public String getRegpassword() {
         return regpassword;
@@ -62,6 +104,9 @@ public class User {
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", regpassword='" + regpassword + '\'' +
+                ", tel='" + tel + '\'' +
+                ", address='" + address + '\'' +
                 '}';
     }
 }

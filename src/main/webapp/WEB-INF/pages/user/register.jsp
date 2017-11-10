@@ -63,7 +63,24 @@
 <%--注册成功跳转到登录界面--%>
 <script>
     $("#submitbtn").click(function () {
-        location.href = "/login"
+        $.post("/addUser",
+                {
+                    "username":$("#regname").val(),
+                    "password":$("#regpass").val(),
+                    "regpassword":$("#regpassre").val(),
+                    "tel":$("#regtel").val(),
+                    "address":$("#regaddress").val()
+                },function (result) {
+                    if (result.errorCode==0){
+                      alert(result.message)
+                        location.href ="/login/"
+                }else {
+                        alert(result.message)
+                    }
+                })
     })
+
+
+
 </script>
 </html>

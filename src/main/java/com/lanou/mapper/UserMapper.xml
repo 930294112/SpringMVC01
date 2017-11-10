@@ -6,4 +6,13 @@
             resultType="com.lanou.domain.User">
         SELECT * FROM b_user WHERE username=#{value}
     </select>
+
+    <insert id ="addUser"
+            parameterType="com.lanou.domain.User"
+            keyProperty="id"
+            useGeneratedKeys="true">
+        INSERT INTO b_user(username,password,tel,address) VALUES (#{username},#{password},#{tel},#{address})
+    </insert>
+
+
 </mapper>

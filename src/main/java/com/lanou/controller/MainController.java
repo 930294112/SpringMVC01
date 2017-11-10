@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -92,12 +95,11 @@ public class MainController {
      */
     @ResponseBody
     @RequestMapping(value = "/loginu")
-    public AjaxLoginResult loginu(User user) {
+    public AjaxLoginResult loginu( User user) {
         AjaxLoginResult result = new AjaxLoginResult();
         /*发起业务查询*/
         if (user != null && user.getUsername() != null) {
             User user1 = userService.findByName(user.getUsername());
-            System.out.println("查询到到的用户对象" + user1);
             if (user1 != null && user1.getPassword().equals(user.getPassword())) {
                  /*正确信息*/
                 result.setErrorCode(0);
@@ -127,12 +129,9 @@ public class MainController {
                            HttpServletRequest request,
                            HttpServletResponse response,
                            Model model) {
-        System.out.println("用户id" + "----" + userId);
-        System.out.println(request);
-        System.out.println(response);
 
         //构建博客对象集合
-        List<Blog> blogList = blogService.findAll();
+        List<Blog> blogList = blogService.findByUserId(userId);
 
         //将博客集合对象保存到model中,属性名要求与界面一致
         model.addAttribute("bloglist", blogList);
@@ -160,13 +159,96 @@ public class MainController {
      */
     @RequestMapping(value = "/addblog")
     public String addblog() {
+
         return "blog/addblog";
     }
 
-    @RequestMapping(value = "/newblog")
-    public String newblog(){
-
-        return  "blog/blogpage";
+    @RequestMapping(value = "/updateblog/{blogId}")
+    public String updateblog(@PathVariable Integer blogId,Model model) {
+        Blog blog = blogService.findById(blogId);
+        model.addAttribute("blog",blog);
+        return "blog/updateblog";
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/newblog")
+    public AjaxLoginResult newblog(Blog blog){
+        AjaxLoginResult result = new AjaxLoginResult();
+        int count = blogService.addBlog(blog);
+        if (count==1){
+            result.setErrorCode(0);
+            result.setMessage("添加成功");
+        }else {
+            result.setMessage("添加失败");
+        }
+        return  result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/addUser")
+    public AjaxLoginResult addUser(User user){
+        AjaxLoginResult result = new AjaxLoginResult();
+        System.out.println(user);
+        if (!user.getPassword().equals(user.getRegpassword())){
+            result.setMessage("密码不一致");
+        }else {
+            int count = userService.addUser(user);
+            if (count==1){
+                result.setErrorCode(0);
+                result.setMessage("添加成功");
+            }else {
+                result.setMessage("添加失败");
+            }
+        }
+
+        return  result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/deleteblog")
+    public AjaxLoginResult deleteblog(int id){
+        System.out.println(id);
+        AjaxLoginResult result = new AjaxLoginResult();
+        int count = blogService.deleteById(id);
+        System.out.println(count);
+        if (count==1){
+            result.setErrorCode(0);
+            result.setMessage("删除成功");
+        }else {
+            result.setMessage("删除失败");
+        }
+        return result;
+    }
+
+
+
+    @RequestMapping(value = "/search")
+    public String search(String content,Model model){
+        System.out.println(content);
+        List<Blog> blogList = blogService.search(content);
+        System.out.println(blogList);
+        model.addAttribute("bloglist", blogList);
+        return "blog/blogpage";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/updblog/{blogId}")
+    public AjaxLoginResult updblog(Blog blog,@PathVariable Integer blogId){
+        AjaxLoginResult result = new AjaxLoginResult();
+        Blog blog1 = blogService.findById(blogId);
+        blog1.setTitle(blog.getTitle());
+        blog1.setDes(blog.getDes());
+        blog1.setDes(blog.getContent());
+        int count = blogService.updateblogById(blog1);
+        if (count==1){
+            result.setErrorCode(0);
+            result.setMessage("编辑成功");
+        }else {
+            result.setMessage("编辑失败");
+        }
+        return result;
+    }
+
+
 
 }

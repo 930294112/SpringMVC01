@@ -39,11 +39,11 @@
                 <li><a href="/addblog">新建博客</a></li>
             </ul>
 
-            <form class="navbar-form navbar-left" action="#">
+            <form class="navbar-form navbar-left" action="/search">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="输入搜索的内容">
+                    <input type="text" class="form-control"  name="content"  placeholder="输入搜索的内容">
                 </div>
-                <button type="submit" class="btn btn-default">提交</button>
+                <button type="submit" class="btn btn-default" id="sub">提交</button>
             </form>
 
             <ul class="nav navbar-nav navbar-right">
@@ -61,14 +61,17 @@
                 <th>博客标题</th>
                 <th>博客描述</th>
                 <th>操作</th>
+
             </tr>
             <c:forEach var="blog" items="${bloglist}">
                 <tr id="${blog.id}">
                     <td><a href="/blogdetail/${blog.id}">${blog.title}</a></td>
                     <td>${blog.des}</td>
-                    <td><a href="#" onclick="deleteById(${blog.id})">删除</a></td>
+                    <td><a href="#" onclick="deleteById(${blog.id})">删除|</a>
+                   <a href="/updateblog/${blog.id}" >编辑</a></td>
                 </tr>
             </c:forEach>
+
         </table>
         <div class="col-md-offset-4 col-md-4">
             <nav aria-label="Page navigation">
@@ -124,14 +127,21 @@
 
     function deleteById(id) {
 
-        $.post("/deleteblog", {"id": id, "userid": $.cookie("userid")}, function (result) {
+        $.post("/deleteblog",
+                {   "id": id,
+                    "userId": $.cookie("userid")
+                }, function (result) {
             if (result.errorCode == 0) {
                 // 删除某一行
                 var rowid = "#" + id;
                 $(rowid).remove();
+                alert(result.message)
+            }else {
+                alert(result.message)
             }
         })
     }
+
 </script>
 
 

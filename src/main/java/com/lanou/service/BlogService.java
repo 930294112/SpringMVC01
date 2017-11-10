@@ -11,4 +11,14 @@ public interface BlogService {
     List<Blog> findAll();
 
     Blog findById(Integer id);
+
+    int  addBlog(Blog blog);
+
+    int deleteById(int id);
+
+    List<Blog> search(String content);
+
+    List<Blog> findByUserId(Integer userId);
+
+    int updateblogById(Blog blog);
 }

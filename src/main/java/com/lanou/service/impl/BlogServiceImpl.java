@@ -27,4 +27,24 @@ public class BlogServiceImpl implements BlogService {
     public Blog findById(Integer id) {
         return blogMapper.findById(id);
     }
+
+    public int addBlog(Blog blog) {
+       return blogMapper.addBlog(blog);
+    }
+
+    public int  deleteById(int id) {
+        return blogMapper.deleteById(id);
+    }
+
+    public List<Blog> search(String content) {
+        return blogMapper.search(content);
+    }
+
+    public List<Blog> findByUserId(Integer userId) {
+        return blogMapper.findByUserId(userId);
+    }
+
+    public int updateblogById(Blog blog) {
+        return blogMapper.updateblogById(blog);
+    }
 }

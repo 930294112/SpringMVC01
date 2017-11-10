@@ -6,9 +6,37 @@
         SELECT * FROM b_blog
     </select>
 
+    <select id="findByUserId"
+            parameterType="int"
+            resultType="com.lanou.domain.Blog">
+        SELECT * FROM b_blog WHERE userId=#{userId}
+    </select>
+
     <select id="findById"
             parameterType="int"
             resultType="com.lanou.domain.Blog">
         SELECT * FROM B_blog WHERE id=#{id}
     </select>
+
+    <insert id="addBlog"
+            parameterType="com.lanou.domain.Blog"
+            keyProperty="id"
+            useGeneratedKeys="true">
+        INSERT INTO b_blog(title,des,content,userId) VALUES (#{title},#{des},#{content},#{userId})
+    </insert>
+    <delete id="deleteById"
+            parameterType="int">
+        DELETE FROM b_blog WHERE id=#{value}
+    </delete>
+
+    <select id="search"
+            parameterType="java.lang.String"
+            resultType="com.lanou.domain.Blog">
+      SELECT * FROM b_blog WHERE title LIKE '%${value}%' OR des LIKE '%${value}%'
+</select>
+
+    <update id="updateblogById"
+            parameterType="com.lanou.domain.Blog">
+        UPDATE b_blog SET title=#{title},des=#{des},content=#{content} WHERE id=#{id}
+    </update>
 </mapper>

@@ -10,8 +10,14 @@
        http://www.springframework.org/schema/mvc/spring-mvc.xsd
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--注入Hibernate校验对象-->
+    <bean id="validator"
+          class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="providerClass"  value="org.hibernate.validator.HibernateValidator"/>
+    </bean>
     <!--配置注解模型-->
-    <mvc:annotation-driven/>
+    <mvc:annotation-driven validator="validator"/>
 
     <!--注解扫描的根路径-->
     <context:component-scan base-package="com.lanou"/>
